@@ -22,20 +22,19 @@ compress = Compress()
 def check_auth(username, password):
     return username == 'User' and password == 'Guest'
 
-def authenticate():
-    return Response(
-    'Error.\n'
-    'Please login with the proper credentials.', 401,
-    {'WWW-Authenticate': 'Basic realm="Login Required"'})
-
-def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password):
-            return authenticate()
-        return f(*args, **kwargs)
-    return decorated
+#def authenticate():
+ #   return Response(
+#    'Error.\n'
+#    'Please login with the proper credentials.', 401,
+#
+#def requires_auth(f):
+#    @wraps(f)
+#    def decorated(*args, **kwargs):
+#        auth = request.authorization
+ #       if not auth or not check_auth(auth.username, auth.password):
+ #           return authenticate()
+ #       return f(*args, **kwargs)
+#    return decorated
 
 class Pogom(Flask):
     def __init__(self, import_name, **kwargs):
@@ -48,7 +47,7 @@ class Pogom(Flask):
         self.route("/next_loc", methods=['POST'])(self.next_loc)
         self.route("/mobile", methods=['GET'])(self.list_pokemon)
 
-    @requires_auth
+ #   @requires_auth
     def fullmap(self):
         args = get_args()
         display = "inline"
@@ -63,7 +62,7 @@ class Pogom(Flask):
                                is_fixed=display
                                )
     
-    @requires_auth
+ #   @requires_auth
     def raw_data(self):
         d = {}
         swLat = request.args.get('swLat')
@@ -90,7 +89,7 @@ class Pogom(Flask):
 
         return jsonify(d)
 
-    @requires_auth
+#    @requires_auth
     def loc(self):
         d = {}
         d['lat'] = config['ORIGINAL_LATITUDE']
@@ -98,7 +97,7 @@ class Pogom(Flask):
 
         return jsonify(d)
 
-    @requires_auth
+ #   @requires_auth
     def next_loc(self):
         args = get_args()
         if args.fixed_location:
@@ -120,7 +119,7 @@ class Pogom(Flask):
             log.info('Changing next location: %s,%s' % (lat, lon))
             return 'ok'
 
-    @requires_auth
+#    @requires_auth
     def list_pokemon(self):
         # todo: check if client is android/iOS/Desktop for geolink, currently
         # only supports android
